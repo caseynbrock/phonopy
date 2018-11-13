@@ -1,0 +1,20 @@
+This is an example for the Socorro interface.
+
+To create supercells with displacements:
+
+% phonopy --socorro -c unitcell.in -d --dim="2 2 2"
+
+A perfect 2x2x2 supercell (supercell.in) and one 2x2x2 supercell
+(supercell-xxx.in) of the conventional unit cell written in unitcell.in
+are created. In addition, the disp.yaml file is created. After the force
+calculation with the crystal structure in supercell-001.in, it is
+necessary to create the FORCE_SETS file with
+
+% phonopy --socorro -f diaryf
+
+Here the diaryf file is the output of the Socorro calculation and is
+supposed to contain the forces on atoms calculated by Socorro (make sure 
+forces are on in the argvf file). The disp.yaml file has to be in the 
+current directory. Now you can run a phonon calculation, e.g.,
+
+% phonopy --socorro -c unitcell.in -p --dim="2 2 2" --pa="0 1/2 1/2 1/2 0 1/2 1/2 1/2 0" --band="1/2 1/2 1/2 0 0 0 1/2 0 1/2"
