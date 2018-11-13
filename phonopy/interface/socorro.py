@@ -55,15 +55,11 @@ def parse_set_of_forces(num_atoms, forces_filenames, verbose=True):
             sys.stdout.write("%d. " % (i + 1))
         with open(filename, 'r') as fin:
             f = fin.readlines()
-        print f[0]
-        print hook
-        print num_atoms
         socorro_forces = collect_forces(f,
                                     num_atoms,
                                     hook,
                                     [1,2,3],
                                     skiplines=2)
-        print socorro_forces
         if check_forces(socorro_forces, num_atoms, filename, verbose=verbose):
             drift_force = get_drift_forces(socorro_forces,
                                            filename=filename,
