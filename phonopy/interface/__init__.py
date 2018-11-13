@@ -39,6 +39,7 @@ def read_crystal_structure(filename=None,
                            interface_mode=None,
                            chemical_symbols=None,
                            yaml_mode=False):
+
     if filename is None:
         unitcell_filename = get_default_cell_filename(interface_mode, yaml_mode)
     else:
@@ -68,6 +69,11 @@ def read_crystal_structure(filename=None,
     if interface_mode == 'abinit':
         from phonopy.interface.abinit import read_abinit
         unitcell = read_abinit(unitcell_filename)
+        return unitcell, (unitcell_filename,)
+
+    if interface_mode == 'socorro':
+        from phonopy.interface.socorro import read_socorro
+        unitcell = read_socorro(unitcell_filename)
         return unitcell, (unitcell_filename,)
 
     if interface_mode == 'qe':
@@ -107,6 +113,9 @@ def get_default_cell_filename(interface_mode, yaml_mode):
         return "POSCAR"
     if interface_mode in ('abinit', 'qe'):
         return "unitcell.in"
+    if interface_mode == 'socorro':
+        #return "unitcell.in"
+        raise NotImplementedError
     if interface_mode == 'wien2k':
         return "case.struct"
     if interface_mode == 'elk':
@@ -125,6 +134,7 @@ def get_default_physical_units(interface_mode):
     vasp          : eV,      Angstrom,  AMU,         eV/Angstrom
     wien2k        : Ry,      au(=borh), AMU,         mRy/au
     abinit        : hartree, au,        AMU,         eV/Angstrom
+    socorro       : Ry,      au,        AMU,         Ry/au
     elk           : hartree, au,        AMU,         hartree/au
     qe            : Ry,      au,        AMU,         Ry/au
     siesta        : eV,      au,        AMU,         eV/Angstroem
@@ -147,6 +157,10 @@ def get_default_physical_units(interface_mode):
     elif interface_mode == 'abinit':
         units['factor'] = AbinitToTHz
         units['nac_factor'] = Hartree / Bohr
+        units['distance_to_A'] = Bohr
+    elif interface_mode == 'socorro':
+        units['factor'] = PwscfToTHz
+        units['nac_factor'] = 2.0
         units['distance_to_A'] = Bohr
     elif interface_mode == 'qe':
         units['factor'] = PwscfToTHz
@@ -186,6 +200,7 @@ def create_FORCE_SETS(interface_mode,
     if (interface_mode is None or
         interface_mode == 'vasp' or
         interface_mode == 'abinit' or
+        interface_mode == 'socorro' or
         interface_mode == 'elk' or
         interface_mode == 'qe' or
         interface_mode == 'siesta' or
@@ -260,6 +275,8 @@ def get_force_sets(interface_mode,
         from phonopy.interface.vasp import parse_set_of_forces
     elif interface_mode == 'abinit':
         from phonopy.interface.abinit import parse_set_of_forces
+    elif interface_mode == 'socorro':
+        from phonopy.interface.socorro import parse_set_of_forces
     elif interface_mode == 'qe':
         from phonopy.interface.qe import parse_set_of_forces
     elif interface_mode == 'elk':

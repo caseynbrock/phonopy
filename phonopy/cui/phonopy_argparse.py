@@ -144,6 +144,7 @@ def get_parser():
         read_qpoints=False,
         show_irreps=False,
         sigma=None,
+        socorro_mode=False,
         supercell_dimension=None,
         symprec=1e-5,
         tmax=None,
@@ -404,6 +405,9 @@ def get_parser():
     parser.add_argument(
         "--sigma", dest="sigma",
         help="Smearing width for DOS")
+    parser.add_argument(
+        "--socorro", dest="socorro_mode", action="store_true",
+        help="Invoke Socorro mode")
     parser.add_argument(
         "--symmetry", dest="is_check_symmetry", action="store_true",
         help="Check crystal symmetry")
