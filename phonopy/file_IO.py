@@ -109,13 +109,14 @@ def _get_line_ignore_blank(f):
 
 
 def collect_forces(f, num_atom, hook, force_pos, word=None, skiplines=0):
-    for i, line in enumerate(f):
+    for line in f:
         if hook in line:
-            hook_line = i
+            for _ in range(skiplines):
+                next(f)
+            break
 
-    start_line = hook_line + 1 + skiplines
     forces = []
-    for line in f[start_line:]:
+    for line in f:
         if word is not None:
             if word not in line:
                 continue
